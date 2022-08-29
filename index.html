@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Alpine Plugins -->
+<script defer src="https://unpkg.com/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
+ 
+<!-- Alpine Core -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+	<script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <title>Alpine JS Crash Course</title>
+    <style>
+      [x-cloak] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mx-auto mt-6 max-w-sm px-3">
+      <div class="text-5xl mb-4">Alpine.js demo</div>
+
+      <!-- x-data: Declare a new Alpine component and its data for a block of HTML -->
+      <div
+        x-data="{ 
+		open: false, 
+		name: 'Brad',
+		search: '',
+		posts: [
+		{title:'Post One'},
+		{title:'Post Two'},
+		{title:'Post Three'},
+		{title:'Post Four'},
+		]
+		}"
+      >
+        <!-- x-on: Listen for browser events on an element -->
+        <!-- x-bind: Dynamically set HTML attributes on an element -->
+        <a
+          x-on:click="open = ! open"
+          x-bind:class="open ? 'bg-blue-800 rounded-xl' : 'bg-slate-800'"
+          class="inline-block px-4 py-2 text-md font-medium text-white bg-slate-800 rounded-full focus:outline-none focus:ring"
+        >
+          Read more
+        </a>
+
+
+        <div x-show="open" x-transition x-cloak>
+          <p class="bg-gray-200 p-4 my-6 rounded">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet
+            omnis excepturi ex laudantium. Perferendis aperiam iure nisi soluta
+            aliquam, nemo impedit consequatur, aliquid deleniti quisquam ullam?
+            Assumenda unde dicta eveniet!
+          </p>
+        </div>
+        <div class="my-4">
+          <!-- x-text: Set the text content of an element -->
+
+          The value of name is <span x-text="name" class="font-bold"></span>
+        </div>
+        <!-- x-effect: Execute a script each time one of its dependancies change -->
+        <div x-effect="console.log(open)"></div>
+
+        <!-- x-model: Synchronize a piece of data with an input element -->
+
+        <div class="relative">
+          <label class="sr-only" for="email"> Email </label>
+
+          <input
+            x-model="search"
+            class="w-full py-4 pl-3 pr-16 text-sm border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-700"
+            id="text"
+            type="text"
+            placeholder="Search for something..."
+          />
+          <p>
+            <span class="font-semibold">Searching for:</span>
+            <span x-text="search"></span>
+          </p>
+
+          <!-- x-if: Conditionally add/remove a block of HTML from the page entirely. -->
+		  <template x-if="open">
+			<div class="bg-gray-50 p-2 mt-8">
+				Template based on a condition
+				<div>
+		  </template>
+		 
+		  <h3 class="text-2xl mt-6 mb-3 font-bold">
+			Posts
+		  </h3>
+		   <!-- x-for: Repeat a block of HTML based on a data set -->
+		  <template x-for="post in posts"	>
+			<div x-text="post.title"></div>
+		  </template>
+		  <!-- x-on alternative way -->
+		  <button @click="posts.push({title: 'New Post'})" class="inline-block px-4 py-2 text-md font-medium text-white bg-slate-800 rounded-full focus:outline-none focus:ring"
+        >
+          Add post
+		  </button>
+
+		  <!-- x-ref: Reference elements directly by their specified keys using the $refs property -->
+
+		  <div class="my-6">
+			<div x-ref="text">Hello World!</div>
+			<button 
+			@click="$refs.text.remove()" class="inline-block px-4 py-2 text-md font-medium text-white bg-slate-800 rounded-full focus:outline-none focus:ring"
+			>
+			  Click
+			  </button>
+		  </div>
+		  <!-- x-html: Set the inner HTML of an element -->
+		  <div x-html="(await axios.get('./partial.html')).data">
+			...
+		  </div>
+		  <!-- $el: Reference the current DOM element -->
+		  <button 
+		  @click="$el.innerHTML = 'Hello World'"
+		  class="mt-4 p-4 border"
+			>
+			  Replace Text
+			</button>
+		
+			<!-- x-init: send some javascript when it's initialized -->
+			<!-- $watch: Watch a piece of data and run the provided callback anytime it changes  -->
+			<div x-init="$watch('posts', value => console.log(value))"></div>
+
+			<!-- $dispatch: Dispatch (send) a custom browser event from the current element -->
+			<div @notify="alert('You have been notified')">
+				<button @click="$dispatch('notify')" class="bg-green-700 text-white p-2 mt-4">
+					Notify
+				</button>
+			</div>
+
+			<!-- $data:  -->
+			<button 
+			@click="getLatestPost($data.posts)""
+			class="bg-orange-800 text-white mt-6 p-2 rounded-lg">
+				Get Latest Post
+			</button>
+
+			<div class="mt-6">
+				<h3 class="text-2xl mb-2">Enter a date:</h3>
+				<input class="px-4 py-2 border w-full" x-mask="99/99/9999" placeholder="MM/DD/YYYY">
+			</div>
+        </div>
+      </div>
+    </div>
+	<footer x-data class="text-center mt-10">
+		<p>Copyright &copy; <span x-text="new Date().getFullYear()"></span></p>
+
+	</footer>
+
+
+	<script>
+		// Function to get the latest post from all posts
+		function getLatestPost(posts){
+			console.log(posts.slice(-1).pop());
+		}
+	</script>
+
+  </body>
+</html>
